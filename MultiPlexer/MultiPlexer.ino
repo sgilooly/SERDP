@@ -5,9 +5,11 @@
  *
  */
 #include <MS5837.h>
+#include <MS5837_2.h>
 #include <SPI.h>
 #include <SD.h>
-#include <Wire.h>
+//#include <Wire.h>
+#include <i2c_t3.h>
 extern "C" { 
 #include "utility/twi.h"  // from Wire library, so we can do bus scanning
 }
