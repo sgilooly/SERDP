@@ -8,11 +8,11 @@
 #include <MS5837_2.h>
 #include <SPI.h>
 #include <SD.h>
-//#include <Wire.h>
+#include <Wire.h>
 #include <i2c_t3.h>
 extern "C" { 
 #include "utility/twi.h"  // from Wire library, so we can do bus scanning
-}
+//int index; //create label
 
 #define TCAADDR 0x70
 
@@ -56,20 +56,31 @@ void setup()
 
 void loop() 
 {
-  tcaselect(2);
-  MS5837 sensor2;
+    for (uint8_t index=0; index<8; index++) {
+      readAndWrite(index);
+      delay(100);
+    }
+  Serial.println(" "); 
+}
+
+
+void readAndWrite(index) {
+  tsaselect(index)
+  MS5837 sensor1;
+  sensor1.read();
+  sensor1.setModel(MS5837::MS5837_30BA);
+  sensor1.setFluidDensity(997); // kg/m^3 (freshwater, 1029 for seawater)
+  Serial.print(sensor1.pressure()); 
+  Serial.print(", ");
+  
+  MS5837_2 sensor2;
   sensor2.read();
   sensor2.setModel(MS5837::MS5837_30BA);
   sensor2.setFluidDensity(997); // kg/m^3 (freshwater, 1029 for seawater)
-  
-
   Serial.print(sensor2.pressure()); 
   Serial.print(", ");
-  Serial.print(sensor2.temperature()); 
-  Serial.print(", ");
-  Serial.print(sensor2.depth()); 
-  Serial.print(", ");
-  Serial.println(sensor2.altitude()); 
-  
-  delay(100);
 }
+
+
+
+
