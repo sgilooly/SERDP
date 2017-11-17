@@ -12,6 +12,7 @@
 #include <i2c_t3.h>
 extern "C" { 
 #include "utility/twi.h"  // from Wire library, so we can do bus scanning
+}
 //int index; //create label
 
 #define TCAADDR 0x70
