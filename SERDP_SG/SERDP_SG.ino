@@ -27,7 +27,7 @@ void loop(){
   for (uint8_t index=0; index<8; index++) {
     tcaselect(index);
     readAndWrite();
-    storage[index] = String(sensor.pressure());
+    storage[index] = String(sensor.pressure(),0);
     delay(10);
   
   }
@@ -38,12 +38,14 @@ void loop(){
     tcaselect1(index);
     readAndWrite();
     val = 8+index;
-    storage[val] = String(sensor.pressure());
+    storage[val] = String(sensor.pressure(),0);
     delay(10);
   }
-  printString = String(storage[0]+", "+storage[1]+", "+storage[2]+", "+storage[3]+", "+storage[4]+", "+storage[5]+", "+storage[6]+", "+storage[7]+", "+storage[8]+", "+storage[9]+", "+storage[10]+", "+storage[11]+", "+storage[12]+", "+storage[13]+", "+storage[14]+", "+storage[15]+ "\n");       
+  Serial.println(" ");
+  printString = String(storage[0]+","+storage[1]+","+storage[2]+","+storage[3]+","+storage[4]+","+storage[5]+","+storage[6]+","+storage[7]+","+storage[8]+","+storage[9]+","+storage[10]+","+storage[11]+","+storage[12]+","+storage[13]+","+storage[14]+","+storage[15]+","+"\n");       
   Serial.println(printString);
   Serial.println(" "); 
+  Serial1.print(printString);
   
 }
 
