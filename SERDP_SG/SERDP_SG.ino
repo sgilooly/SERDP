@@ -1,12 +1,68 @@
 #include "Wire.h"
 #include <MS5837.h>
-//extern "C" {
-//#include "utility/twi.h" // from Wire library, so we can do bus scanning
-//}
+
 #define TCAADDR 0x70
 #define TCAADDR1 0x71
 #define HWSERIAL Serial1
 MS5837 sensor;
+
+float pressures [2][8] = {  {0,1,2,3,4,5,6,7},
+                            {8,9,10,11,12,13,14,15} };
+String storage[]={" ", " ", " "," ", " "," "," "," ", " "," "," "," ", " "," "," "," "};
+String printString;
+int val;
+
+
+void setup(){
+  Wire.begin();
+  Serial.begin(9600);
+  Serial1.begin(9600);
+  sensor.setModel(MS5837::MS5837_30BA);
+  sensor.setFluidDensity(997); // kg/m^3 (freshwater, 1029 for seawater)
+
+}
+
+void loop(){
+  Serial.println("Multiplexer 0:");
+  for (uint8_t index=0; index<8; index++) {
+    tcaselect(index);
+    readAndWrite();
+    storage[index] = String(sensor.pressure());
+    delay(10);
+  
+  }
+  Serial.println(" "); 
+  
+  Serial.println("Multiplexer 1:");
+  for (uint8_t index=0; index<8; index++) {
+    tcaselect1(index);
+    readAndWrite();
+    val = 8+index;
+    storage[val] = String(sensor.pressure());
+    delay(10);
+  }
+  printString = String(storage[0]+", "+storage[1]+", "+storage[2]+", "+storage[3]+", "+storage[4]+", "+storage[5]+", "+storage[6]+", "+storage[7]+", "+storage[8]+", "+storage[9]+", "+storage[10]+", "+storage[11]+", "+storage[12]+", "+storage[13]+", "+storage[14]+", "+storage[15]+ "\n");       
+  Serial.println(printString);
+  Serial.println(" "); 
+  
+}
+
+void readAndWrite () {
+if (!sensor.init()) {
+  delay(10);
+  if(!sensor.init()){
+    Serial1.print("0.00");
+    Serial.print(" miss ");
+  }
+}
+else {
+    sensor.read();
+    Serial.print(sensor.pressure());
+    Serial.print(" ");
+  }
+}
+
+
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
@@ -33,52 +89,5 @@ void tcaselect1(uint8_t i) {
   Wire.write(1 << i);
   Wire.endTransmission();  
 }
-
-
-
-void setup(){
-  Wire.begin();
-  Serial.begin(9600);
-  Serial1.begin(9600);
-  Serial.println("Setup Complete");
-  Serial.println("  ");
-  sensor.setModel(MS5837::MS5837_30BA);
-  sensor.setFluidDensity(997); // kg/m^3 (freshwater, 1029 for seawater)
-
-}
-
-void loop(){
-  Serial.println("Multiplexer 0:");
-  for (uint8_t index=0; index<8; index++) {
-    tcaselect(index);
-    readAndWrite();
-    delay(10);
-  }
-  Serial.println(" "); 
-  
-  Serial.println("Multiplexer 1:");
-  for (uint8_t index=0; index<8; index++) {
-    tcaselect1(index);
-    readAndWrite();
-    delay(10);
-  }
-  Serial.println(" "); 
-  
-}
-
-void readAndWrite () {
-if (!sensor.init()) {
-  delay(10);
-  if(!sensor.init()){
-    Serial1.print("0.00");
-    Serial.print(" miss ");
-  }
-}
-else {
-    sensor.read();
-    Serial.print(sensor.pressure());
-    Serial.print(" ");
-  }
-}  
 
 
