@@ -10,7 +10,7 @@ float pressures [2][8] = {  {0,1,2,3,4,5,6,7},
                             {8,9,10,11,12,13,14,15} };
 String storage[]={" ", " ", " "," ", " "," "," "," ", " "," "," "," ", " "," "," "," "};
 String printString;
-int val;
+uint8_t val;
 
 
 void setup(){
@@ -26,8 +26,8 @@ void loop(){
   Serial.println("Multiplexer 0:");
   for (uint8_t index=0; index<8; index++) {
     tcaselect(index);
-    readAndWrite();
-    storage[index] = String(sensor.pressure(),0);
+    readAndWrite(index);
+    //storage[index] = String(sensor.pressure(),0);
     delay(10);
   
   }
@@ -36,9 +36,9 @@ void loop(){
   Serial.println("Multiplexer 1:");
   for (uint8_t index=0; index<8; index++) {
     tcaselect1(index);
-    readAndWrite();
     val = 8+index;
-    storage[val] = String(sensor.pressure(),0);
+    readAndWrite(val);
+    //storage[val] = String(sensor.pressure(),0);
     delay(10);
   }
   Serial.println(" ");
@@ -49,18 +49,20 @@ void loop(){
   
 }
 
-void readAndWrite () {
+void readAndWrite (uint8_t i) {
 if (!sensor.init()) {
   delay(10);
   if(!sensor.init()){
-    Serial1.print("0.00");
+    //Serial1.print("0.00");
     Serial.print(" miss ");
+    storage[i]="0.00";
   }
 }
 else {
     sensor.read();
     Serial.print(sensor.pressure());
     Serial.print(" ");
+    storage[i]=String(sensor.pressure(),0);
   }
 }
 
@@ -91,5 +93,3 @@ void tcaselect1(uint8_t i) {
   Wire.write(1 << i);
   Wire.endTransmission();  
 }
-
-
