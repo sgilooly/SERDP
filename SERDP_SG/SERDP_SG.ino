@@ -26,10 +26,7 @@ void loop(){
   Serial.println("Multiplexer 0:");
   for (uint8_t index=0; index<8; index++) {
     tcaselect(index);
-    readAndWrite(index);
-    //storage[index] = String(sensor.pressure(),0);
-    delay(10);
-  
+    readAndWrite(index);  
   }
   Serial.println(" "); 
   
@@ -38,8 +35,6 @@ void loop(){
     tcaselect1(index);
     val = 8+index;
     readAndWrite(val);
-    //storage[val] = String(sensor.pressure(),0);
-    delay(10);
   }
   Serial.println(" ");
   printString = String(storage[0]+","+storage[1]+","+storage[2]+","+storage[3]+","+storage[4]+","+storage[5]+","+storage[6]+","+storage[7]+","+storage[8]+","+storage[9]+","+storage[10]+","+storage[11]+","+storage[12]+","+storage[13]+","+storage[14]+","+storage[15]+","+"\n");       
@@ -51,7 +46,7 @@ void loop(){
 
 void readAndWrite (uint8_t i) {
 if (!sensor.init()) {
-  delay(10);
+  delay(5);
   if(!sensor.init()){
     //Serial1.print("0.00");
     Serial.print(" miss ");
